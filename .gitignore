@@ -1,0 +1,6 @@
+astmn
+.key
+*.exe
+*.bin
+
+*.log

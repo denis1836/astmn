@@ -1,0 +1,18 @@
+* text=auto
+
+# binaries detection
+*.jpg binary
+*.png binary
+*.gif binary
+*.pdf binary
+*.zip binary
+
+# git lfs
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+
+# cleaning export archive code
+.gitignore export-ignore
+.gitattributes export-ignore
+/tests/ export-ignore
+.github/ export-ignore
