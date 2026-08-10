@@ -4,7 +4,7 @@ import (
 	color "github.com/fatih/color"
 )
 
-// Abbriviations: c - color | t - text 
+// c - color | t - text 
 var (
 	cNC = color.New(color.FgWhite).SprintFunc();
 	cInfo = color.New(color.FgBlue).SprintFunc();
@@ -14,23 +14,23 @@ var (
 	tBold = color.New(color.Bold).SprintFunc();
 )
 
-func PrintInfo(msg string) {
+func pInfo(msg string) {
 	color.Printf("%s: %s \n", cInfo("info"), msg)
 }
 
-func PrintOk(msg string) {
-	color.Printf("%s: %s \n", cOk("info"), msg)
+func pOk(msg string) {
+	color.Printf("%s: %s \n", cOk("ok"), msg)
 }
 
-func PrintWarn(msg string) {
-	color.Printf("%s: %s \n", cWarn("info"), msg)
+func pWarn(msg string) {
+	color.Printf("%s: %s \n", cWarn("warning"), msg)
 }
 
-func PrintError(msg string) {
-	color.Printf("%s: %s \n", cError("info"), msg)
+func pError(msg string) {
+	color.Printf("%s: %s \n", cError("error"), msg)
 }
 
-func PrintHeader(title string) {
-	color.Printf("\n%s\n\n", tBold(title), msg)
+func pBold(title string) {
+	color.Printf("%s \n", tBold(title), msg)
 }
 
