@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"astmn/log"
-	
+	"astmn/internal/log"
+
 	_ "modernc.org/sqlite"
 )
 
@@ -51,8 +51,8 @@ func OpenPool(dbPath string) error {
 	if err := PingDB(); err != nil {
 		return err
 	}
-	
-	err := initSchema();
+
+	err = initSchema()
 	if err != nil {
 		log.Errorf("failed to init db schema: %v", err)
 	}
@@ -64,18 +64,18 @@ func ClosePool() error {
 	if Pool == nil {
 		return nil
 	}
-	
+
 	err := Pool.Close()
 	if err != nil {
 		log.Errorf("Unable to close db pool: %v", err)
 		return err
 	}
-	
+
 	return nil
 }
 
 func PingDB() error {
-	if _, err := Pool.Ping(); err != nil {
+	if err := Pool.Ping(); err != nil {
 		log.Errorf("Unable to ping db: %v", err)
 		return err
 	}
@@ -85,8 +85,8 @@ func PingDB() error {
 
 func initSchema() error {
 	query := `
-	CREATE TABLE IF NOR EXISTS Installed_Packages (
-		id INTEGER PRIAMRY KEY,
+	CREATE TABLE IF NOT EXISTS Installed_Packages (
+		id INTEGER PRIMARY KEY,
 		version TEXT NOT NULL,
 		preset TEXT NOT NULL,
 		installed_at DATETIME DEFAULT CURRENT_TIMESTAMP

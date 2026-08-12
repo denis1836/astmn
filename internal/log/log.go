@@ -2,20 +2,19 @@ package log
 
 import (
 	"io"
-	"fmt"
+	stdlog "log"
 	"os"
 	"path/filepath"
+	"time"
 
-	config "astmn/config"
-	ui "astmn/ui"
+	"astmn/internal/ui"
 )
 
-var logger *log.Logger
+var logger *stdlog.Logger
 
-func InitLogger() (io.Writer, error){
-	logDir := config.GetLogDir()
+func InitLogger(logDir string) (io.Writer, error) {
 	if err := os.MkdirAll(logDir, 0755); err != nil {
-		ui.pError("can't create log dir: " + err.Error())
+		ui.PError("can't create log dir: " + err.Error())
 		return nil, err
 	}
 
@@ -24,17 +23,17 @@ func InitLogger() (io.Writer, error){
 	fullPath := filepath.Join(logDir, logFileName)
 	absPath, err := filepath.Abs(fullPath)
 	if err != nil {
-		ui.pError("can't get abs path: " + err.Error())
+		ui.PError("can't get abs path: " + err.Error())
 		return nil, err
 	}
 
-	logFile, err := os.OpenFile(absPath, os.O_CREATE|os.OWRONLY|os.O_APPEND, 0644)
+	logFile, err := os.OpenFile(absPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
-		ui.pError("can't create log file: " + err.Error())
+		ui.PError("can't create log file: " + err.Error())
 		return nil, err
 	}
 
-	logger = log.New(logFile, "[ASTMN] ", log.LstdFlags|log.Lshortfile)
+	logger = stdlog.New(logFile, "[ASTMN] ", stdlog.LstdFlags|stdlog.Lshortfile)
 
 	return logFile, nil
 }
@@ -57,9 +56,8 @@ func Error(msg string) {
 	}
 }
 
-func Errorf(msg string, v ...any) {
+func Errorf(format string, v ...any) {
 	if logger != nil {
-		logger.Printf("[ERROR]"+error, v...)
+		logger.Printf("[ERROR]"+format, v...)
 	}
 }
-
