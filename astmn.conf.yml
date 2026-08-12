@@ -1,0 +1,4 @@
+asset_registry_dir: "./asset_registry"
+logs_dir: "./.astmn/logs"
+db_path: "./.astmn/project.db"
+preset: "ue5"
