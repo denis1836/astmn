@@ -57,7 +57,7 @@ func Error(msg string) {
 	}
 }
 
-func Error(msg string, v ...any) {
+func Errorf(msg string, v ...any) {
 	if logger != nil {
 		logger.Printf("[ERROR]"+error, v...)
 	}
