@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"fmt"
+
 	color "github.com/fatih/color"
 )
 
@@ -15,21 +17,21 @@ var (
 )
 
 func PInfo(msg string) {
-	color.Printf("%s: %s \n", cInfo("info"), msg)
+	fmt.Printf("%s: %s \n", cInfo("info"), msg)
 }
 
 func POk(msg string) {
-	color.Printf("%s: %s \n", cOk("ok"), msg)
+	fmt.Printf("%s: %s \n", cOk("ok"), msg)
 }
 
 func PWarn(msg string) {
-	color.Printf("%s: %s \n", cWarn("warning"), msg)
+	fmt.Printf("%s: %s \n", cWarn("warning"), msg)
 }
 
 func PError(msg string) {
-	color.Printf("%s: %s \n", cError("error"), msg)
+	fmt.Printf("%s: %s \n", cError("error"), msg)
 }
 
 func PBold(msg string) {
-	color.Printf("%s", tBold(msg))
+	fmt.Printf("%s", tBold(msg))
 }
