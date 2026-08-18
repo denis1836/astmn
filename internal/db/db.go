@@ -44,6 +44,7 @@ func OpenPool(dbPath string) error {
 	}
 
 	Pool = db
+	db = nil
 	Pool.SetConnMaxLifetime(0)
 	Pool.SetMaxIdleConns(2)
 	Pool.SetMaxOpenConns(5)
@@ -87,6 +88,7 @@ func initSchema() error {
 	query := `
 	CREATE TABLE IF NOT EXISTS Installed_Packages (
 		id INTEGER PRIMARY KEY,
+		name TEXT NOT NULL,
 		version TEXT NOT NULL,
 		preset TEXT NOT NULL,
 		installed_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -94,7 +96,8 @@ func initSchema() error {
 
 	CREATE TABLE IF NOT EXISTS Package_Files (
 		id INTEGER PRIAMRY KEY,
-		package_id TEXT NOT NULL, 
+		package_id TEXT NOT NULL,
+		name TEXT NOT NULL,
 		relative_path TEXT NOT NULL, 
 		sha256 BLOB NOT NULL,
 		file_size INTEGER NOT NULL,
@@ -110,4 +113,53 @@ func initSchema() error {
 	}
 
 	return nil
+}
+
+func InsertPackage(name, version, preset string) error {
+	insertPackageQuery := `
+	INSERT INTO Installed_Packages(name, version, preset)
+	VALUES (?, ?, ?);
+	`
+	_, err := Pool.Exec(insertPackageQuery, name, version, preset)
+	if err != nil {
+		log.Errorf("unable to insert package into db: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func InsertFile(packageId int, name, relPath, hash string, size int64) error {
+	insertPackageFileQuery := `
+	INSERT INTO Package_Files(package_id, name, relative_path, sha256, file_size)
+	VALUES (?, ?, ?, ?, ?);
+	`
+
+	_, err := Pool.Exec(insertPackageFileQuery, packageId, name, relPath, hash, size)
+	if err != nil {
+		log.Errorf("unable to insert file into db: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func GetPackageNameById(packageId int) (string, error) {
+	getPackageNameQuery := `
+	SELECT name FROM Installed_Packages
+	WHERE id = ?
+	`
+
+	var name string
+	err := Pool.QueryRow(getPackageNameQuery, packageId).Scan(&name)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", fmt.Errorf("package with id %d not found", packageId)
+		}
+		log.Errorf("unable to get package name: %v", err)
+		return "", err
+	}
+
+	return name, nil
 }
