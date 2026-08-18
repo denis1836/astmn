@@ -1,7 +1,7 @@
 package preset
 
 import (
-	"astmn/internal/manifest"	
+	"astmn/internal/manifest"
 )
 
 type PresetHandler interface {
@@ -9,24 +9,24 @@ type PresetHandler interface {
 
 	Validate(m *manifest.Manifest) []string
 
-	ResolveTargetDir(baseDir, manifestInstallPath string) string
+	ResolveTargetDir(baseDir, manifestInstallPath string) (string, error)
 
 	InspectArchive(archivePath string) error
 
 	PostInstall(targetDir string, m *manifest.Manifest) error
 }
 
-func Get(name string, defaultPreset string) PresetHandler {
+func Get(name string) PresetHandler {
 	if name == "" {
-		name = defaultPreset
+		name = "default"
 	}
 
 	switch name {
-		case "ue5":
-			return &UE5Preset{}
-		case "freecad":
-			return &FreeCADPreset{}
-		default:
-			return &DefaultPreset{}
+	case "ue5":
+		return &UE5Preset{}
+	case "freecad":
+		return &FreeCADPreset{}
+	default:
+		return &DefaultPreset{}
 	}
 }
