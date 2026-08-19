@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"io"
 	stdlog "log"
 	"os"
@@ -12,7 +13,7 @@ import (
 
 var logger *stdlog.Logger
 
-func InitLogger(logDir string) (io.Writer, error) {
+func InitLogger(logDir string) (*os.File, error) {
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		ui.PError("can't create log dir: " + err.Error())
 		return nil, err
@@ -33,31 +34,33 @@ func InitLogger(logDir string) (io.Writer, error) {
 		return nil, err
 	}
 
-	logger = stdlog.New(logFile, "[ASTMN] ", stdlog.LstdFlags|stdlog.Lshortfile)
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+
+	logger = stdlog.New(multiWriter, "[ASTMN] ", stdlog.LstdFlags|stdlog.Lshortfile)
 
 	return logFile, nil
 }
 
 func Info(msg string) {
 	if logger != nil {
-		logger.Println("[INFO] ", msg)
+		logger.Output(2, "[INFO] "+msg)
 	}
 }
 
 func Infof(format string, v ...any) {
 	if logger != nil {
-		logger.Printf("[INFO] "+format, v...)
+		logger.Output(2, fmt.Sprintf("[INFO] "+format, v...))
 	}
 }
 
 func Error(msg string) {
 	if logger != nil {
-		logger.Println("[ERROR]", msg)
+		logger.Output(2, "[ERROR] "+msg)
 	}
 }
 
 func Errorf(format string, v ...any) {
 	if logger != nil {
-		logger.Printf("[ERROR]"+format, v...)
+		logger.Output(2, fmt.Sprintf("[ERROR] "+format, v...))
 	}
 }
