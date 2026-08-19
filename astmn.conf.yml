@@ -1,4 +1,6 @@
 asset_registry_dir: "./asset_registry"
+temp_download_dir: "/tmp/astmn"
+keep_downloads: true
 logs_dir: "./.astmn/logs"
 db_path: "./.astmn/project.db"
 preset: "ue5"

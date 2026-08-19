@@ -8,8 +8,10 @@ import (
 
 type Config struct {
 	AssetsRegistryDir string `yaml:"asset_registry_dir"`
+	TempDownloadDir   string `yaml:"temp_download_dir"`
+	KeepDownloads     bool   `yaml:"keep_downloads"`
 	LogsDir           string `yaml:"logs_dir"`
-	DBPath            string `yaml:"db_dir"`
+	DBPath            string `yaml:"db_path"`
 	Preset            string `yaml:"preset"`
 }
 
