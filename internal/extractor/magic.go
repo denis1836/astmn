@@ -17,7 +17,7 @@ var (
 	rarMagic      = []byte{0x52, 0x61, 0x72, 0x21, 0x1A, 0x07}
 )
 
-func DetectArhiveType(filepath string) (string, error) {
+func DetectArchiveType(filepath string) (string, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		return "", fmt.Errorf("failed to open file for type detection: %v", err)
