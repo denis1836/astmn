@@ -13,7 +13,7 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:   "astmn",
-	Short: "astmn - Asset Manager for gamedev, CAD and large binary files",
+	Short: "astmn - Asset Manager for game dev, CAD and large binary files",
 	Long:  `Cross-platform CLI tool for managing large binary assets using lightweight YAML manifests and SQLite.`,
 }
 

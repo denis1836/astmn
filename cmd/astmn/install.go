@@ -17,7 +17,7 @@ var (
 )
 
 var installCmd = &cobra.Command{
-	Use:   "install [mainfest.yml]",
+	Use:   "install [manifest.yml]",
 	Short: "Install an asset package from a manifest file",
 	Args:  cobra.ExactArgs(1),
 
@@ -31,10 +31,10 @@ var installCmd = &cobra.Command{
 			return err
 		}
 
-		ui.PInfo(fmt.Sprintf("intalling package: %s(%v)", m.Name, m.Version))
+		ui.PInfo(fmt.Sprintf("installing package: %s(%v)", m.Name, m.Version))
 		log.Infof("starting download (%s)...", m.Name)
 
-		//TODO: validating/clrearing dir from config for safety
+		//TODO: validating/clearing dir from config for safety
 		destArchive := fmt.Sprintf(c.TempDownloadDir + "/" + m.FileName)
 		if err := downloader.DownloadFile(m.DownloadURL, destArchive); err != nil {
 			ui.PError(fmt.Sprintf("failed to download: %w", err))
@@ -51,14 +51,14 @@ var installCmd = &cobra.Command{
 		//TODO: db module actions
 		//TODO: post install preset actions
 
-		ui.POk(fmt.Sprintf("succesfully installed %s", m.Name))
+		ui.POk(fmt.Sprintf("successfully installed %s", m.Name))
 		return nil
 	},
 }
 
 func init() {
 	installCmd.Flags().BoolVarP(&forceFlag, "force", "f", false, "Force re-installation even if package exists")
-	installCmd.Flags().BoolVar(&downloadOnly, "download-onlt", false, "Download to archive without extracting")
+	installCmd.Flags().BoolVar(&downloadOnly, "download-only", false, "Download to archive without extracting")
 
 	rootCmd.AddCommand(installCmd)
 }

@@ -24,7 +24,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer logFile.Close()
-	log.Info("logger initlized")
+	log.Info("logger initialized")
 
 	log.Info("starting...")
 	log.Info("opening db pool...")
