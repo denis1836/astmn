@@ -24,6 +24,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer logFile.Close()
+	log.Info("logger initlized")
 
 	log.Info("starting...")
 	log.Info("opening db pool...")
@@ -31,6 +32,8 @@ func main() {
 		log.Errorf("error opening db pool: %v", err)
 		os.Exit(1)
 	}
+	defer db.ClosePool()
 	log.Info("done!")
 
+	Execute()
 }
