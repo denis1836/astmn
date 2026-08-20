@@ -1,6 +1,58 @@
-astmn
-.key
-*.exe
-*.bin
+# Project specifics
+# sqlite
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite3
 
+# tmp dirs
+.downloads/
+tmp/
+*.tmp
+
+# secerts
+.key
+*.pem
+*.env
+*.local.yml
+
+# logs
+logs/**
 *.log
+
+# Binaries and Builds
+# executables
+/astmn
+/astmn.exe
+*.exe
+*.exe.manifest
+*.dll
+*.so
+*.dylib
+
+# test files
+*.test
+*.out
+*.prof
+
+# System and IDE
+# mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
