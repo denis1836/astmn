@@ -98,7 +98,7 @@ func initSchema() error {
 		package_id INTEGER NOT NULL,
 		name TEXT NOT NULL,
 		relative_path TEXT NOT NULL, 
-		sha256 BLOB NOT NULL,
+		sha256 TEXT NOT NULL,
 		file_size INTEGER NOT NULL,
 
 		FOREIGN KEY(package_id) REFERENCES Installed_Packages(id) ON DELETE CASCADE
