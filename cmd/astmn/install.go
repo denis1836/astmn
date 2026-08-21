@@ -5,9 +5,12 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"astmn/internal/db"
 	"astmn/internal/downloader"
+	"astmn/internal/extractor"
 	"astmn/internal/log"
 	"astmn/internal/manifest"
+	"astmn/internal/preset"
 	"astmn/internal/ui"
 )
 
@@ -32,12 +35,19 @@ var installCmd = &cobra.Command{
 		}
 
 		ui.PInfo(fmt.Sprintf("installing package: %s(%v)", m.Name, m.Version))
-		log.Infof("starting download (%s)...", m.Name)
 
-		//TODO: validating/clearing dir from config for safety
-		destArchive := fmt.Sprintf(c.TempDownloadDir + "/" + m.FileName)
+		//TODO: validator package
+
+		destArchive := fmt.Sprintf("%s/%s", c.TempDownloadDir, m.FileName)
+		log.Infof("starting download to %s...", destArchive)
 		if err := downloader.DownloadFile(m.DownloadURL, destArchive); err != nil {
 			ui.PError(fmt.Sprintf("failed to download: %w", err))
+			return err
+		}
+
+		pkgID, err := db.InsertPackage(m.Name, m.Version, c.Preset)
+		if err != nil {
+			ui.PError(fmt.Sprintf("failed to register package in database: %v", err))
 			return err
 		}
 
@@ -46,10 +56,28 @@ var installCmd = &cobra.Command{
 			return nil
 		}
 
-		//TODO: extractor module
-		//TODO: verification (extensions, zip searching)
-		//TODO: db module actions
-		//TODO: post install preset actions
+		ui.PInfo("extracting files...")
+		extractedFiles, err := extractor.ExtractArchive(destArchive, m.InstallPath)
+		if err != nil {
+			ui.PError(fmt.Sprintf("failed to extract archive: %v", err))
+			return err
+		}
+
+		log.Infof("logging %d extracted files to db...", len(extractedFiles))
+		for _, file := range extractedFiles {
+			if err := db.InsertFile(pkgID, file.Name, file.RelPath, file.Hash, file.Size); err != nil {
+				log.Errorf("failed to log file %s to db: %v", file.RelPath, err)
+			}
+		}
+
+		pHandler := preset.Get(c.Preset)
+		if pHandler != nil {
+			log.Infof("executing post-install actions for preset: %s", pHandler.Name())
+			if err := pHandler.PostInstall(m.InstallPath, m); err != nil {
+				ui.PError(fmt.Sprintf("post-install hook failed: %v", err))
+				return err
+			}
+		}
 
 		ui.POk(fmt.Sprintf("successfully installed %s", m.Name))
 		return nil
