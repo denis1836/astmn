@@ -12,6 +12,7 @@ import (
 	"astmn/internal/manifest"
 	"astmn/internal/preset"
 	"astmn/internal/ui"
+	"astmn/internal/validator"
 )
 
 var (
@@ -36,7 +37,10 @@ var installCmd = &cobra.Command{
 
 		ui.PInfo(fmt.Sprintf("installing package: %s(%v)", m.Name, m.Version))
 
-		//TODO: validator package
+		if err := validator.Validate(m); err != nil {
+			ui.PError(fmt.Sprintf("invalid manifest: %v", err))
+			return err
+		}
 
 		destArchive := fmt.Sprintf("%s/%s", c.TempDownloadDir, m.FileName)
 		log.Infof("starting download to %s...", destArchive)
