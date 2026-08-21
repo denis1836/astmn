@@ -115,21 +115,25 @@ func initSchema() error {
 	return nil
 }
 
-func InsertPackage(name, version, preset string) error {
+func InsertPackage(name, version, preset string) (int64, error) {
 	insertPackageQuery := `
 	INSERT INTO Installed_Packages(name, version, preset)
 	VALUES (?, ?, ?);
 	`
-	_, err := Pool.Exec(insertPackageQuery, name, version, preset)
+	res, err := Pool.Exec(insertPackageQuery, name, version, preset)
 	if err != nil {
-		log.Errorf("unable to insert package into db: %v", err)
-		return err
+		return 0, fmt.Errorf("failed to insert package: %w", err)
 	}
 
-	return nil
+	id, err := res.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get last insert id: %w", err)
+	}
+
+	return id, nil
 }
 
-func InsertFile(packageId int, name, relPath, hash string, size int64) error {
+func InsertFile(packageId int64, name, relPath, hash string, size int64) error {
 	insertPackageFileQuery := `
 	INSERT INTO Package_Files(package_id, name, relative_path, sha256, file_size)
 	VALUES (?, ?, ?, ?, ?);
@@ -144,7 +148,7 @@ func InsertFile(packageId int, name, relPath, hash string, size int64) error {
 	return nil
 }
 
-func GetPackageNameById(packageId int) (string, error) {
+func GetPackageNameById(packageId int64) (string, error) {
 	getPackageNameQuery := `
 	SELECT name FROM Installed_Packages
 	WHERE id = ?
