@@ -1,0 +1,28 @@
+name: "ISO Fasteners & Hardware Library"
+version: "1.2.0"
+date: "2026-08-19"
+author: "John Smith <john.smith@example.com>"
+description: "Parametric ISO standard fasteners library for FreeCAD containing 3D models for ISO 4017 bolts, ISO 4032 nuts, DIN 125 washers, and ISO 4762 cap screws."
+contributors:
+  - "Jane Doe <jane.doe@company.com>"
+  - "Will Miller <contact@millerinc.com>"
+
+file_name: "iso_fasteners_v1.2.0.zip"
+download_url: "https://drive.google.com/file/d/1Uo66dtctjdA2lXYrdbro7N1AE5v-LUSo/view?usp=sharing"
+sha256: "a990d2ba4d7a7117228362bcbfb97462dec1a8ec720ecf116511c7af2e7544e4"
+archive_type: "zip"
+install_path: "Mod/ISO_Fasteners"
+
+contents:
+  - "ISO4017_HexHeadBolt.FCStd"
+  - "ISO4032_HexNut.FCStd"
+  - "DIN125_FlatWasher.FCStd"
+  - "ISO4762_SocketCapScrew.FCStd"
+  - "InitGui.py"
+  - "icons/bolt.png"
+
+depends_on: []
+changelog:
+  - "v1.0.0 - Initial release with ISO 4017 Hex Bolts"
+  - "v1.1.0 - Added ISO 4032 Nuts and DIN 125 Washers"
+  - "v1.2.0 - Added ISO 4762 Socket Cap Screws and updated parametric constraints"
