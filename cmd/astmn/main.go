@@ -12,7 +12,8 @@ import (
 var c *config.Config
 
 func main() {
-	c, err := config.Load("./astmn.conf.yml")
+	var err error
+	c, err = config.Load("./astmn.conf.yml")
 	if err != nil {
 		ui.PError("unable to load config" + err.Error())
 		os.Exit(1)
