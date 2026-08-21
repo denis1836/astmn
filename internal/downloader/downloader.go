@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -62,6 +63,10 @@ func DownloadFile(rawURL, destPath string) error {
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("server returned bad statusL: %s", resp.Status)
+	}
+
+	if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {
+		return fmt.Errorf("failed to create destination directory: %w", err)
 	}
 
 	out, err := os.Create(destPath)
