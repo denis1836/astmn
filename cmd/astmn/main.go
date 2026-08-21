@@ -33,8 +33,11 @@ func main() {
 		log.Errorf("error opening db pool: %v", err)
 		os.Exit(1)
 	}
-	defer db.ClosePool()
-	log.Info("done!")
+	defer func() {
+		_ = db.ClosePool()
+	}()
+	log.Info("db pool opened!")
 
 	Execute()
+	log.Info("done!")
 }

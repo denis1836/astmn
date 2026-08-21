@@ -8,7 +8,7 @@ import (
 
 // c - color | t - text
 var (
-	cNC    = color.New(color.FgWhite).SprintFunc()
+	// cNC    = color.New(color.FgWhite).SprintFunc()
 	cInfo  = color.New(color.FgBlue).SprintFunc()
 	cOk    = color.New(color.FgGreen).SprintFunc()
 	cWarn  = color.New(color.FgYellow).SprintFunc()

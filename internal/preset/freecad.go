@@ -14,18 +14,9 @@ func (p *FreeCADPreset) Name() string { return "freecad" }
 func (p *FreeCADPreset) Validate(m *manifest.Manifest) []string {
 	var errs []string = nil
 
-	if m.Name == "" {
-		errs = append(errs, "name is missing")
-	}
-	if m.Version == "" {
-		errs = append(errs, "verstion is missing")
-	}
-	if m.DownloadURL == "" {
-		errs = append(errs, "download_url is missing")
-	}
-	//TODO
+	//TODO: add freecad-specific fields
 
-	return nil
+	return errs
 }
 
 func (p *FreeCADPreset) ResolveTargetDir(baseDir, installPath string) (string, error) {

@@ -44,7 +44,6 @@ func OpenPool(dbPath string) error {
 	}
 
 	Pool = db
-	db = nil
 	Pool.SetConnMaxLifetime(0)
 	Pool.SetMaxIdleConns(2)
 	Pool.SetMaxOpenConns(5)

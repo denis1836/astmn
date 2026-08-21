@@ -43,24 +43,24 @@ func InitLogger(logDir string) (*os.File, error) {
 
 func Info(msg string) {
 	if logger != nil {
-		logger.Output(2, "[INFO] "+msg)
+		_ = logger.Output(2, "[INFO] "+msg)
 	}
 }
 
 func Infof(format string, v ...any) {
 	if logger != nil {
-		logger.Output(2, fmt.Sprintf("[INFO] "+format, v...))
+		_ = logger.Output(2, fmt.Sprintf("[INFO] "+format, v...))
 	}
 }
 
 func Error(msg string) {
 	if logger != nil {
-		logger.Output(2, "[ERROR] "+msg)
+		_ = logger.Output(2, "[ERROR] "+msg)
 	}
 }
 
 func Errorf(format string, v ...any) {
 	if logger != nil {
-		logger.Output(2, fmt.Sprintf("[ERROR] "+format, v...))
+		_ = logger.Output(2, fmt.Sprintf("[ERROR] "+format, v...))
 	}
 }

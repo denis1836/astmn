@@ -17,15 +17,9 @@ func (p *UE5Preset) Validate(m *manifest.Manifest) []string {
 	if m.Name == "" {
 		errs = append(errs, "name is missing")
 	}
-	if m.Version == "" {
-		errs = append(errs, "verstion is missing")
-	}
-	if m.DownloadURL == "" {
-		errs = append(errs, "download_url is missing")
-	}
-	//TODO
+	//TODO : add ue5-specific fields
 
-	return nil
+	return errs
 }
 
 func (p *UE5Preset) ResolveTargetDir(baseDir, installPath string) (string, error) {

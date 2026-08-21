@@ -45,7 +45,7 @@ var installCmd = &cobra.Command{
 		destArchive := fmt.Sprintf("%s/%s", c.TempDownloadDir, m.FileName)
 		log.Infof("starting download to %s...", destArchive)
 		if err := downloader.DownloadFile(m.DownloadURL, destArchive); err != nil {
-			ui.PError(fmt.Sprintf("failed to download: %w", err))
+			ui.PError(fmt.Sprintf("failed to download: %v", err))
 			return err
 		}
 
