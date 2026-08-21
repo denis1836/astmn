@@ -91,12 +91,12 @@ func initSchema() error {
 		name TEXT NOT NULL,
 		version TEXT NOT NULL,
 		preset TEXT NOT NULL,
-		installed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		installed_at TEXT DEFAULT CURRENT_TIMESTAMP
 	) STRICT;
 
 	CREATE TABLE IF NOT EXISTS Package_Files (
-		id INTEGER PRIAMRY KEY,
-		package_id TEXT NOT NULL,
+		id INTEGER PRIMARY KEY,
+		package_id INTEGER NOT NULL,
 		name TEXT NOT NULL,
 		relative_path TEXT NOT NULL, 
 		sha256 BLOB NOT NULL,
