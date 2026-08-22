@@ -1,15 +1,19 @@
 package extractor
 
 import (
+	"archive/tar"
 	"archive/zip"
-	"astmn/internal/log"
+	"compress/gzip"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"astmn/internal/log"
 )
 
 const (
@@ -134,4 +138,73 @@ func saveAndHashStream(src io.Reader, destPath string) (ExtractedFileInfo, error
 		Size: written,
 		Hash: hex.EncodeToString(hasher.Sum(nil)),
 	}, nil
+}
+
+func extractTarGzip(archivePath, targetDir string) ([]ExtractedFileInfo, error) {
+	archiveFileReader, err := os.Open(archivePath)
+	if err != nil {
+		return nil, fmt.Errorf("unable to open file %s: %w", archivePath, err)
+	}
+	defer archiveFileReader.Close()
+
+	gzipReader, err := gzip.NewReader(archiveFileReader)
+	if err != nil {
+		return nil, fmt.Errorf("unable to open gzip file reader: %w", err)
+	}
+	defer gzipReader.Close()
+
+	tarReader := tar.NewReader(gzipReader)
+
+	targetDirAbs, err := filepath.Abs(targetDir)
+	if err != nil {
+		return nil, fmt.Errorf("invalid target directory: %w", err)
+	}
+
+	var totalSize int64
+	var extractedFiles []ExtractedFileInfo
+	for {
+		hdr, err := tarReader.Next()
+		if errors.Is(err, io.EOF) {
+			break
+		}
+		if err != nil {
+			return nil, fmt.Errorf("unable to read tar header: %w", err)
+		}
+
+		totalSize += hdr.FileInfo().Size()
+		if totalSize > MaxUncompressedSize {
+			return nil, fmt.Errorf("the uncompressed archive size exceeds limit (%d bytes > %d limit)", totalSize, MaxUncompressedSize)
+		}
+
+		destPath := filepath.Join(targetDirAbs, hdr.Name)
+		cleanDestPath := filepath.Clean(destPath)
+
+		if !strings.HasPrefix(cleanDestPath, targetDirAbs+string(os.PathSeparator)) && cleanDestPath != targetDirAbs {
+			return nil, fmt.Errorf("illegal zip file path (Zip-Slip attempt): %s", hdr.Name)
+		}
+
+		if hdr.FileInfo().IsDir() {
+			if err := os.MkdirAll(cleanDestPath, hdr.FileInfo().Mode().Perm()); err != nil {
+				return nil, fmt.Errorf("failed to create directory: %s: %w", cleanDestPath, err)
+			}
+			continue
+		}
+
+		if err := os.MkdirAll(filepath.Dir(cleanDestPath), hdr.FileInfo().Mode().Perm()); err != nil {
+			return nil, fmt.Errorf("failed to create parent dir for %s: %w", cleanDestPath, err)
+		}
+
+		fInfo, err := saveAndHashStream(tarReader, cleanDestPath)
+		if err != nil {
+			return nil, err
+		}
+
+		relPath, _ := filepath.Rel(targetDirAbs, cleanDestPath)
+		fInfo.RelPath = relPath
+
+		extractedFiles = append(extractedFiles, fInfo)
+	}
+
+	log.Infof("successfully extracted %d files to %s", len(extractedFiles), targetDir)
+	return extractedFiles, nil
 }
