@@ -40,6 +40,8 @@ func ExtractArchive(archivePath, targetDir string) ([]ExtractedFileInfo, error) 
 	//TODO: other archive files extracting
 	case "7z":
 		return nil, fmt.Errorf("7zip is not implemented yet")
+	case "tar.gz":
+		return extractTarGzip(archivePath, targetDir)
 	case "gzip":
 		return nil, fmt.Errorf("gzip is not implemented yet")
 	case "tar":

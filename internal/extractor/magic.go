@@ -2,6 +2,7 @@ package extractor
 
 import (
 	"bytes"
+	"compress/gzip"
 	"fmt"
 	"io"
 	"os"
@@ -38,6 +39,13 @@ func DetectArchiveType(filepath string) (string, error) {
 	case bytes.HasPrefix(header, sevenZipMagic):
 		return "7z", nil
 	case bytes.HasPrefix(header, gzipMagic):
+		isTar, err := checkIfGzipContainsTar(filepath)
+		if err != nil {
+			return "gzip", nil
+		}
+		if isTar {
+			return "tar.gz", nil
+		}
 		return "gzip", nil
 	case len(header) >= 262 && bytes.Equal(header[257:262], tarMagic):
 		return "tar", nil
@@ -46,4 +54,30 @@ func DetectArchiveType(filepath string) (string, error) {
 	default:
 		return "unknown", nil
 	}
+}
+
+func checkIfGzipContainsTar(filepath string) (bool, error) {
+	f, err := os.Open(filepath)
+	if err != nil {
+		return false, err
+	}
+	defer f.Close()
+
+	gzipReader, err := gzip.NewReader(f)
+	if err != nil {
+		return false, err
+	}
+	defer gzipReader.Close()
+
+	uncompressedBuff := make([]byte, 512)
+	n, err := io.ReadFull(gzipReader, uncompressedBuff)
+	if err != nil && err != io.ErrUnexpectedEOF && err != io.EOF {
+		return false, err
+	}
+
+	if n >= 262 && bytes.Equal(uncompressedBuff[257:262], tarMagic) {
+		return true, nil
+	}
+
+	return false, nil
 }
