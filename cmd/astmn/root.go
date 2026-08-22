@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
-)
+	"astmn/internal/opts"
 
-var (
-	verboseFlag bool
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -25,6 +23,5 @@ func Execute() {
 }
 
 func init() {
-	//TODO: configure verbose flag functionality for other modules
-	rootCmd.PersistentFlags().BoolVarP(&verboseFlag, "verbose", "v", false, "Enable verbose output logging")
+	rootCmd.PersistentFlags().BoolVarP(&opts.App.Verbose, "verbose", "v", false, "Enable verbose output logging")
 }

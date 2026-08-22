@@ -8,10 +8,22 @@ import (
 	"path/filepath"
 	"time"
 
+	"astmn/internal/opts"
 	"astmn/internal/ui"
 )
 
 var logger *stdlog.Logger
+
+type conditionalWriter struct {
+	target io.Writer
+}
+
+func (cw *conditionalWriter) Write(p []byte) (n int, err error) {
+	if opts.App.Verbose {
+		return cw.target.Write(p)
+	}
+	return len(p), nil
+}
 
 func InitLogger(logDir string) (*os.File, error) {
 	if err := os.MkdirAll(logDir, 0755); err != nil {
@@ -34,7 +46,9 @@ func InitLogger(logDir string) (*os.File, error) {
 		return nil, err
 	}
 
-	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	stdoutStream := &conditionalWriter{target: os.Stdout}
+
+	multiWriter := io.MultiWriter(logFile, stdoutStream)
 
 	logger = stdlog.New(multiWriter, "[ASTMN] ", stdlog.LstdFlags|stdlog.Lshortfile)
 
