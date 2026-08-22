@@ -1,0 +1,37 @@
+name: "Code Assets and Maps Vol. 1"
+version: "2.12.53"
+ue_version: "5.7.4"
+date: "2026-08-21"
+author: "Alex Vance <alex.vance@vancestudios.io>"
+description: "Modular UE5 gameplay framework containing core C++ components, optimized PBR master materials, Niagara VFX systems, and production-ready environment maps."
+contributors:
+  - "Sarah Connor <s.connor@vancestudios.io>"
+  - 'Liam "Dev" Jones <liam@vancestudios.io>'
+
+file_name: "code_assets_maps_vol1_v2.12.53.tar.gz"
+download_url: "https://drive.google.com/file/d/1sio3-DnSdhC0-rMclBvpL9qF1RSkeZWH/view?usp=sharing"
+sha256: "1ecd2a8a419bcb568393279e7a557e20d6b2aa68faa86939e16453d3abb05e7c"
+archive_type: "tar.gz"
+install_path: "Content/"
+
+contents:
+  - "Maps/Demonstration_Map.umap"
+  - "Maps/Overview_Lighting.umap"
+  - "Blueprints/Core/BP_GameplayGameMode.uasset"
+  - "Blueprints/Components/BP_HealthComponent.uasset"
+  - "Materials/Master/M_Base_PBR.uasset"
+  - "Materials/Instances/MI_Concrete_01.uasset"
+  - "Textures/T_Concrete_01_Normal.uasset"
+  - "Source/CodeAssets/Private/CodeAssetsModule.cpp"
+
+depends_on:
+  - "unreal_core_framework >= 1.4.0"
+  - "niagara_helpers >= 2.0.0"
+
+changelog:
+  - "v1.0.0 - Initial release with basic C++ templates and 2 demo maps"
+  - "v2.0.0 - Major overhaul: updated physics system and Substrate material support"
+  - "v2.10.0 - Added Niagara GPU particle systems and Nanite mesh variants"
+  - "v2.12.0 - Refactored C++ components for better multi-thread performance"
+  - "v2.12.50 - Hotfix for memory leaks in custom async resource loaders"
+  - "v2.12.53 - Updated API compatibility for Unreal Engine 5.7 and fixed shader compilation warnings"
