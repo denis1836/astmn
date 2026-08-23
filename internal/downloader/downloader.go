@@ -9,8 +9,11 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"astmn/internal/log"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 var (
@@ -75,10 +78,29 @@ func DownloadFile(rawURL, destPath string) error {
 	}
 	defer out.Close()
 
-	_, err = io.Copy(out, resp.Body)
+	fileName := filepath.Base(destPath)
+	bar := progressbar.NewOptions64(
+		resp.ContentLength,
+		progressbar.OptionSetDescription(fmt.Sprintf("%-20s", fileName)),
+		progressbar.OptionSetWidth(40),
+		progressbar.OptionShowBytes(true),
+		progressbar.OptionSetPredictTime(true),
+		progressbar.OptionThrottle(65*time.Millisecond),
+		progressbar.OptionSetTheme(progressbar.Theme{
+			Saucer:        "#",
+			SaucerHead:    "#",
+			SaucerPadding: " ",
+			BarStart:      "[",
+			BarEnd:        "]",
+		}),
+	)
+
+	_, err = io.Copy(io.MultiWriter(out, bar), resp.Body)
 	if err != nil {
 		return fmt.Errorf("failed to write content to a file: %w", err)
 	}
+
+	fmt.Println()
 
 	return nil
 }
