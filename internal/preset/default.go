@@ -17,7 +17,7 @@ func (p *DefaultPreset) Validate(m *manifest.Manifest) []string {
 		errs = append(errs, "name is missing")
 	}
 	if m.Version == "" {
-		errs = append(errs, "verstion is missing")
+		errs = append(errs, "version is missing")
 	}
 	if m.DownloadURL == "" {
 		errs = append(errs, "download_url is missing")
