@@ -1,0 +1,33 @@
+name: "Base Actors for Maps"
+version: "1.4.2"
+preset: "ue5"
+ue_version: "5.7.4"
+date: "2026-08-24"
+author: "Jack Ruddock <jack.ruddock@mapworks.io>"
+description: "Core Actor templates, interactive volume triggers, and essential blockout geometry used as base components across all map levels."
+contributors: []
+
+file_name: "ba_maps.7z"
+download_url: "https://drive.google.com/file/d/1dI2gcXz6DcvYbzT_AT8rJ5eapC1IMjfW/view?usp=sharing"
+sha256: "3835385307c80ca8cbeab30ef9f53a695f660bbe08f3d27db09ee56e73ff1916"
+archive_type: "7z"
+install_path: "Content/"
+
+contents:
+  - "Blueprints/Actors/BP_BaseInteractiveActor.uasset"
+  - "Blueprints/Actors/BP_BaseEnvironmentalActor.uasset"
+  - "Blueprints/Actors/BP_BaseTriggerVolume.uasset"
+  - "Blueprints/Components/BPC_MapStateListener.uasset"
+  - "Meshes/Props/SM_TemplateBlock_01.uasset"
+  - "Meshes/Props/SM_TemplateBlock_02.uasset"
+  - "Materials/M_Grid_Template.uasset"
+  - "Materials/MI_Grid_Orange.uasset"
+
+depends_on: []
+
+changelog:
+  - "v1.0.0 - Initial release of core template actors and spatial placement grids"
+  - "v1.1.3 - Fixed inverted mesh normals and face winding issues on blockout geometry"
+  - "v1.2.12 - Resolved memory leak in event dispatchers during level stream unload"
+  - "v1.4.1 - Added modular blockout shapes and extended volume types for new level maps"
+  - "v1.4.2 - Fix for pivot point transform offsets introduced in v1.4.1 shapes"
