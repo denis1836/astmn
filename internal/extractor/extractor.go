@@ -41,7 +41,7 @@ func ExtractArchive(archivePath, targetDir string) ([]ExtractedFileInfo, error) 
 		return extractZip(archivePath, targetDir)
 	//TODO: other archive files extracting
 	case "7z":
-		return nil, fmt.Errorf("7zip is not implemented yet")
+		return extract7zip(archivePath, targetDir)
 	case "tar.gz":
 		return extractTarGzip(archivePath, targetDir)
 	case "gzip":
