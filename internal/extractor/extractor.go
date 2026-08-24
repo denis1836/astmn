@@ -14,6 +14,8 @@ import (
 	"strings"
 
 	"astmn/internal/log"
+
+	"github.com/bodgit/sevenzip"
 )
 
 const (
@@ -202,6 +204,66 @@ func extractTarGzip(archivePath, targetDir string) ([]ExtractedFileInfo, error) 
 		}
 
 		relPath, _ := filepath.Rel(targetDirAbs, cleanDestPath)
+		fInfo.RelPath = relPath
+
+		extractedFiles = append(extractedFiles, fInfo)
+	}
+
+	log.Infof("successfully extracted %d files to %s", len(extractedFiles), targetDir)
+	return extractedFiles, nil
+}
+
+func extract7zip(archivePath, targetDir string) ([]ExtractedFileInfo, error) {
+	r, err := sevenzip.OpenReader(archivePath)
+	if err != nil {
+		return nil, fmt.Errorf("unable to open 7zip reader: %w", err)
+	}
+	defer r.Close()
+
+	targetDirAbs, err := filepath.Abs(targetDir)
+	if err != nil {
+		return nil, fmt.Errorf("invalid target directory: %w", err)
+	}
+
+	var totalSize int64
+	var extractedFiles []ExtractedFileInfo
+	for _, f := range r.File {
+		totalSize += f.FileInfo().Size()
+		if totalSize > MaxUncompressedSize {
+			return nil, fmt.Errorf("the uncompressed archive size exceeds limit (%d bytes > %d limit)", totalSize, MaxUncompressedSize)
+		}
+
+		destPath := filepath.Join(targetDirAbs, f.Name)
+		cleanDestPath := filepath.Clean(destPath)
+
+		relPath, err := filepath.Rel(targetDirAbs, cleanDestPath)
+		if err != nil || strings.HasPrefix(relPath, "..") || relPath == ".." {
+			return nil, fmt.Errorf("illegal zip file path (Zip-Slip attempt): %s", f.Name)
+		}
+
+		if f.FileInfo().IsDir() {
+			if err := os.MkdirAll(cleanDestPath, 0755); err != nil {
+				return nil, fmt.Errorf("failed to create directory: %s: %w", cleanDestPath, err)
+			}
+			continue
+		}
+
+		if err := os.MkdirAll(filepath.Dir(cleanDestPath), 0755); err != nil {
+			return nil, fmt.Errorf("failed to create parent dir for %s: %w", cleanDestPath, err)
+		}
+
+		rc, err := f.Open()
+		if err != nil {
+			return nil, fmt.Errorf("failed to open inner 7zip file %s: %w", f.Name, err)
+		}
+
+		fInfo, err := saveAndHashStream(rc, cleanDestPath)
+		if err != nil {
+			return nil, err
+		}
+		_ = rc.Close()
+
+		relPath, _ = filepath.Rel(targetDirAbs, cleanDestPath)
 		fInfo.RelPath = relPath
 
 		extractedFiles = append(extractedFiles, fInfo)
