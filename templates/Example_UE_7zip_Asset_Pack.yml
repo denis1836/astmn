@@ -10,7 +10,6 @@ contributors: []
 file_name: "ba_maps.7z"
 download_url: "https://drive.google.com/file/d/1dI2gcXz6DcvYbzT_AT8rJ5eapC1IMjfW/view?usp=sharing"
 sha256: "3835385307c80ca8cbeab30ef9f53a695f660bbe08f3d27db09ee56e73ff1916"
-archive_type: "7z"
 install_path: "Content/"
 
 contents:

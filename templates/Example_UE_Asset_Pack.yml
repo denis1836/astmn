@@ -11,7 +11,6 @@ contributors:
 file_name: "code_assets_maps_vol1_v2.12.53.tar.gz"
 download_url: "https://drive.google.com/file/d/1sio3-DnSdhC0-rMclBvpL9qF1RSkeZWH/view?usp=sharing"
 sha256: "1ecd2a8a419bcb568393279e7a557e20d6b2aa68faa86939e16453d3abb05e7c"
-archive_type: "tar.gz"
 install_path: "Content/"
 
 contents:
