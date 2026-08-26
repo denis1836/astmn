@@ -17,7 +17,7 @@ func ViewManifest(m *manifest.Manifest) error {
 	fmt.Printf("Description: %s\n", m.Description)
 	fmt.Printf("Contributors: \n")
 	for _, c := range m.Contributors {
-		fmt.Printf(" %s", c)
+		fmt.Printf(" %s\n", c)
 	}
 	fmt.Println()
 
@@ -30,11 +30,12 @@ func ViewManifest(m *manifest.Manifest) error {
 		return err
 	}
 	runDir := filepath.Dir(ex)
-	insPathRelDir, err := filepath.Rel(runDir, m.InstallPath)
+
+	insPathRelDir, err := filepath.Rel(runDir, ex)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("InstallPath: %s\n", insPathRelDir)
+	fmt.Printf("InstallPath: %s\n", insPathRelDir+"/"+m.InstallPath)
 
 	fmt.Printf("Contents: \n")
 	for _, c := range m.Contents {
