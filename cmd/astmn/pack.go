@@ -46,6 +46,12 @@ var packCmd = &cobra.Command{
 		}
 
 		log.Infof("saving manifest file to %s...", saveAbsPath)
+		dir := filepath.Dir(saveAbsPath)
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			log.Errorf("failed to create db directory (%v): %v", dir, err)
+			return err
+		}
+
 		err = os.WriteFile(saveAbsPath, yamlData, 0644)
 		if err != nil {
 			ui.PError("unable to create/save manifest file: " + err.Error())

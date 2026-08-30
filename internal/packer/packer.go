@@ -16,25 +16,15 @@ func CreateNewPackage(np *manifest.Manifest) error {
 		return fmt.Errorf("failed to create a bufio stdin reader")
 	}
 
-	fmt.Printf("Package name: ")
-	np.Name = r.Text()
-
-	fmt.Printf("%s version: ", np.Name)
-	np.Version = r.Text()
-
+	np.Name = readLine(r, "Package name: ")
+	np.Version = readLine(r, fmt.Sprintf("%s version: ", np.Name))
 	np.Date = time.Now().Format("2006-01-02")
-
-	fmt.Printf("%s author: ", np.Name)
-	np.Author = r.Text()
-
-	fmt.Printf("%s description: ", np.Name)
-	np.Description = r.Text()
+	np.Author = readLine(r, fmt.Sprintf("%s author: ", np.Name))
+	np.Description = readLine(r, fmt.Sprintf("%s description: ", np.Name))
 
 	fmt.Printf("%s Contributors: ", np.Name)
 	for {
-		fmt.Print("> ")
-		line := r.Text()
-		line = strings.TrimSpace(line)
+		line := readLine(r, "> ")
 		if line == "" {
 			break
 		}
@@ -42,24 +32,15 @@ func CreateNewPackage(np *manifest.Manifest) error {
 	}
 
 	//TODO: file generation and creation
-	fmt.Printf("%s system file name: ", np.Name)
-	np.FileName = r.Text()
-
-	fmt.Printf("%s download URL: ", np.Name)
-	np.DownloadURL = r.Text()
-
+	np.FileName = readLine(r, fmt.Sprintf("%s system file name: ", np.Name))
+	np.DownloadURL = readLine(r, fmt.Sprintf("%s download URL: ", np.Name))
 	//TODO: automatic hash generation
-	fmt.Printf("%s sha256: ", np.Name)
-	np.SHA256 = r.Text()
-
-	fmt.Printf("%s install path: ", np.Name)
-	np.InstallPath = r.Text()
+	np.SHA256 = readLine(r, fmt.Sprintf("%s sha256: ", np.Name))
+	np.InstallPath = readLine(r, fmt.Sprintf("%s install path: ", np.Name))
 
 	fmt.Printf("%s dependencies: ", np.Name)
 	for {
-		fmt.Print("> ")
-		line := r.Text()
-		line = strings.TrimSpace(line)
+		line := readLine(r, "> ")
 		if line == "" {
 			break
 		}
@@ -68,9 +49,7 @@ func CreateNewPackage(np *manifest.Manifest) error {
 
 	fmt.Printf("%s file contents: ", np.Name)
 	for {
-		fmt.Print("> ")
-		line := r.Text()
-		line = strings.TrimSpace(line)
+		line := readLine(r, "> ")
 		if line == "" {
 			break
 		}
@@ -79,9 +58,7 @@ func CreateNewPackage(np *manifest.Manifest) error {
 
 	fmt.Printf("Changelog: ")
 	for {
-		fmt.Print("> ")
-		line := r.Text()
-		line = strings.TrimSpace(line)
+		line := readLine(r, "> ")
 		if line == "" {
 			break
 		}
@@ -89,4 +66,12 @@ func CreateNewPackage(np *manifest.Manifest) error {
 	}
 
 	return nil
+}
+
+func readLine(r *bufio.Scanner, prompt string) string {
+	fmt.Print(prompt)
+	if !r.Scan() {
+		return ""
+	}
+	return strings.TrimSpace(r.Text())
 }
