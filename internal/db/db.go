@@ -84,7 +84,7 @@ func PingDB() error {
 }
 
 func initSchema() error {
-	query := `
+	initDbSchemaQuery := `
 	CREATE TABLE IF NOT EXISTS Installed_Packages (
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL,
@@ -103,11 +103,21 @@ func initSchema() error {
 
 		FOREIGN KEY(package_id) REFERENCES Installed_Packages(id) ON DELETE CASCADE
 	) STRICT;
+
+	CREATE TABLE IF NOT EXISTS Changes (
+		id INTEGER PRIMARY KEY,
+		package_id INTEGER NOT NULL,
+		version TEXT NOT NULL,
+		message TEXT NOT NULL,
+		changed_at TEXT DEFAULT CURRENT_TIMESTAMP,
+
+		FOREIGN KEY(package_id) REFERENCES Installed_Packages(id) ON DELETE CASCADE
+	) STRICT;
 	`
 
-	_, err := Pool.Exec(query)
+	_, err := Pool.Exec(initDbSchemaQuery)
 	if err != nil {
-		log.Errorf("failed to run query(init schema): %v", err)
+		log.Errorf("failed to run init db schema query: %v", err)
 		return err
 	}
 
@@ -165,4 +175,19 @@ func GetPackageNameById(packageId int64) (string, error) {
 	}
 
 	return name, nil
+}
+
+func InsertChangelog(packageId int64, version, message string) error {
+	insertChangelogQuery := `
+		INSERT INTO Changes(package_id, version, message)
+		VALUES (?, ?, ?);
+	`
+
+	_, err := Pool.Exec(insertChangelogQuery, packageId, version, message)
+	if err != nil {
+		log.Errorf("unable to insert change into db: %v", err)
+		return err
+	}
+
+	return nil
 }
