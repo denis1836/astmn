@@ -14,9 +14,11 @@ import (
 var Pool *sql.DB
 
 type InstalledPackage struct {
-	ID        string
+	ID        int64
+	Name      string
 	Version   string
 	Preset    string
+	SHA256    string
 	CreatedAt string
 }
 
@@ -89,8 +91,10 @@ func initSchema() error {
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL,
 		version TEXT NOT NULL,
+		sha256 TEXT NOT NULL UNIQUE,
 		preset TEXT NOT NULL,
-		installed_at TEXT DEFAULT CURRENT_TIMESTAMP
+		installed_at TEXT DEFAULT CURRENT_TIMESTAMP,
+		updated_at TEXT
 	) STRICT;
 
 	CREATE TABLE IF NOT EXISTS Package_Files (
@@ -190,4 +194,13 @@ func InsertChangelog(packageId int64, version, message string) error {
 	}
 
 	return nil
+}
+
+// TODO
+func GetInstalledPackages() ([]InstalledPackage, error) {
+
+}
+
+func GetInstalledPackagesMap() (map[string]InstalledPackage, error) {
+
 }
