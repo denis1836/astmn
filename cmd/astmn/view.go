@@ -26,12 +26,12 @@ var viewCmd = &cobra.Command{
 			return err
 		}
 
-		err = viewer.ViewManifest(m)
+		content, err := viewer.RenderManifest(m)
 		if err != nil {
 			return err
 		}
 
-		return nil
+		return viewer.DisplayInPager(content)
 	},
 }
 
