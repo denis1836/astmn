@@ -197,6 +197,7 @@ func InsertChangelog(packageId int64, version, message string) error {
 }
 
 // TODO
+/*
 func GetInstalledPackages() ([]InstalledPackage, error) {
 
 }
@@ -204,3 +205,4 @@ func GetInstalledPackages() ([]InstalledPackage, error) {
 func GetInstalledPackagesMap() (map[string]InstalledPackage, error) {
 
 }
+*/

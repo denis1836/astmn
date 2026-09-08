@@ -1,20 +1,11 @@
 package updater
 
-import (
-	"fmt"
-	"os"
-
-	"astmn/internal/config"
-	"astmn/internal/db"
-	"astmn/internal/log"
-	"astmn/internal/manifest"
-)
-
 type UpdateInfo struct {
 	UpdatablePackagesAmount int64
 	UpdatablePackagesNames  []string
 }
 
+/*
 func LookForUpdates(c *config.Config) (UpdateInfo, error) {
 	var upinf UpdateInfo
 	var manifests []manifest.Manifest
@@ -32,3 +23,4 @@ func LookForUpdates(c *config.Config) (UpdateInfo, error) {
 	fmt.Println()
 	return upinf, nil
 }
+*/
