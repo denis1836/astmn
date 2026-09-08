@@ -6,24 +6,25 @@ import (
 	"path/filepath"
 
 	"astmn/internal/manifest"
+	"astmn/internal/ui"
 )
 
 func ViewManifest(m *manifest.Manifest) error {
-	fmt.Printf("Name: %s\n", m.Name)
-	fmt.Printf("Version: %s\n", m.Version)
-	fmt.Printf("Date: %s\n", m.Date)
+	fmt.Printf(ui.CYellow("Name: ") + m.Name + "\n")
+	fmt.Printf(ui.CYellow("Version: ") + m.Version + "\n")
+	fmt.Printf(ui.CYellow("Date: ") + m.Date + "\n")
 
-	fmt.Printf("Author: %s\n", m.Author)
-	fmt.Printf("Description: %s\n", m.Description)
-	fmt.Printf("Contributors: \n")
+	fmt.Printf(ui.CYellow("Author: ") + m.Author + "\n")
+	fmt.Printf(ui.CYellow("Description: ") + m.Description + "\n")
+	fmt.Printf(ui.CYellow("Contributors: ") + "\n")
 	for _, c := range m.Contributors {
 		fmt.Printf(" %s\n", c)
 	}
 	fmt.Println()
 
-	fmt.Printf("File name: %s\n", m.FileName)
-	fmt.Printf("Download URL: %s\n", m.DownloadURL)
-	fmt.Printf("SHA256: %s\n", m.SHA256)
+	fmt.Printf(ui.CYellow("File name: ") + m.FileName + "\n")
+	fmt.Printf(ui.CYellow("Download URL: ") + m.DownloadURL + "\n")
+	fmt.Printf(ui.CYellow("SHA256: ") + m.SHA256 + "\n")
 
 	ex, err := os.Executable()
 	if err != nil {
@@ -35,19 +36,19 @@ func ViewManifest(m *manifest.Manifest) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("InstallPath: %s\n", insPathRelDir+"/"+m.InstallPath)
+	fmt.Printf(ui.CYellow("InstallPath: ") + insPathRelDir + "/" + m.InstallPath + "\n")
 
-	fmt.Printf("Contents: \n")
+	fmt.Printf(ui.CYellow("Contents: ") + "\n")
 	for _, c := range m.Contents {
 		fmt.Printf(" %s\n", c)
 	}
 	fmt.Println()
-	fmt.Printf("Dependencies: \n")
+	fmt.Printf(ui.CYellow("Dependencies: ") + "\n")
 	for _, d := range m.DependsOn {
 		fmt.Printf(" %s\n", d)
 	}
 	fmt.Println()
-	fmt.Printf("Changelog: \n")
+	fmt.Printf(ui.CYellow("Changelog: ") + "\n")
 	for _, ch := range m.Changelog {
 		fmt.Printf(" %s\n", ch)
 	}

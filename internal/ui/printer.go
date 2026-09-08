@@ -7,6 +7,14 @@ import (
 )
 
 // c - color | t - text
+
+// public colors for external fmt use
+var (
+	CYellow = color.New(color.FgYellow).SprintFunc()
+	CNc     = color.New(color.FgWhite).SprintFunc()
+)
+
+// internal colors for ui methods
 var (
 	// cNC    = color.New(color.FgWhite).SprintFunc()
 	cInfo  = color.New(color.FgBlue).SprintFunc()
