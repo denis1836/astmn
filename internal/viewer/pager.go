@@ -29,8 +29,12 @@ func DisplayInPager(content string) error {
 		return err
 	}
 
-	io.WriteString(stdin, content)
-	stdin.Close()
+	_, writeErr := io.WriteString(stdin, content)
+	_ = stdin.Close()
+
+	if writeErr != nil {
+		return fmt.Errorf("failed to write content to pager: %w", writeErr)
+	}
 
 	return cmd.Wait()
 }
