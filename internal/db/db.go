@@ -249,8 +249,17 @@ func GetInstalledPackages(ctx context.Context) ([]InstalledPackage, error) {
 	return insPkgs, nil
 }
 
-/*
-func GetInstalledPackagesMap() (map[string]InstalledPackage, error) {
+func GetInstalledPackagesMap(ctx context.Context) (map[string]InstalledPackage, error) {
+	pkgs, err := GetInstalledPackages(ctx)
+	if err != nil {
+		return nil, err
+	}
 
+	pkgMap := make(map[string]InstalledPackage, len(pkgs))
+
+	for _, pkg := range pkgs {
+		pkgMap[pkg.SHA256] = pkg
+	}
+
+	return pkgMap, nil
 }
-*/
