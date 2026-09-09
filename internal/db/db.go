@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"os"
@@ -14,20 +15,30 @@ import (
 var Pool *sql.DB
 
 type InstalledPackage struct {
-	ID        int64
-	Name      string
-	Version   string
-	Preset    string
-	SHA256    string
-	CreatedAt string
+	ID          int64
+	Name        string
+	Version     string
+	Preset      string
+	SHA256      string
+	InstalledAt string
+	UpdatedAt   string
 }
 
 type PackageFile struct {
 	ID           int64
 	PackageID    string
+	Name         string
 	RelativePath string
 	SHA256       string
 	FileSize     int64
+}
+
+type Changes struct {
+	ID        int64
+	PackageID int64
+	version   string
+	message   string
+	ChangedAt string
 }
 
 func OpenPool(dbPath string) error {
@@ -196,12 +207,49 @@ func InsertChangelog(packageId int64, version, message string) error {
 	return nil
 }
 
-// TODO
-/*
-func GetInstalledPackages() ([]InstalledPackage, error) {
+func GetInstalledPackages(ctx context.Context) ([]InstalledPackage, error) {
+	var insPkgs []InstalledPackage
 
+	getInstalledPackagesQuery := `
+	SELECT id, name, version, sha256, installed_at, updated_at
+	FROM Installed_Packages
+	`
+
+	rows, err := Pool.Query(getInstalledPackagesQuery)
+	if err != nil {
+		log.Errorf("failed to run get installed packages query: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var pkg InstalledPackage
+
+		err := rows.Scan(
+			&pkg.ID,
+			&pkg.Name,
+			&pkg.Version,
+			&pkg.SHA256,
+			&pkg.InstalledAt,
+			&pkg.UpdatedAt,
+		)
+		if err != nil {
+			log.Errorf("failed to scan installed package row: %v", err)
+			return nil, err
+		}
+
+		insPkgs = append(insPkgs, pkg)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Errorf("error during installed packages rows iteration: %v", err)
+		return nil, err
+	}
+
+	return insPkgs, nil
 }
 
+/*
 func GetInstalledPackagesMap() (map[string]InstalledPackage, error) {
 
 }
