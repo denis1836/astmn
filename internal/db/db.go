@@ -36,8 +36,8 @@ type PackageFile struct {
 type Changes struct {
 	ID        int64
 	PackageID int64
-	version   string
-	message   string
+	Version   string
+	Message   string
 	ChangedAt string
 }
 
